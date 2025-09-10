@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Expense Tracker</title>
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css"
+      integrity="sha512-DxV+EoADOkOygM4IR9yXP8Sb2qwgidEmeqAEmDKIOfPRQZOWbXCzLC6vjbZyy0vPisbH2SyW27+ddLVCN+OMzQ=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <link rel="stylesheet" href="css/main.css" />
+  </head>
+  <body>
+    <nav>
+      <div class="navbar">
+        <div class="logo">
+          <img src="image/logo.png" height="80px" width="80px" />
+        </div>
+        <div class="name">
+          <h1>Expense Tracker</h1>
+        </div>
+      </div>
+    </nav>
+    <div class="main-content">
+      <div class="title">
+        <select name="tripname1"></select>
+      </div>
+      <div class="participants">
+        <button id="addtrip" title="Add a Trip">
+          <i class="fa-solid fa-suitcase"></i>
+        </button>
+        <button id="openFormBtn" title="Add a New Participants">
+          <i class="fa-solid fa-people-pulling"></i>
+        </button>
+
+        <div class="popup-overlay" id="trippopupForm">
+          <div class="popup-box">
+            <h3>Trip Details</h3>
+            <input type="text" placeholder="Name" id="tripname" />
+            <button onclick="submitTripForm()">Submit</button>
+            <button class="close-btn" onclick="closeTripForm()">Close</button>
+          </div>
+        </div>
+
+        <div class="popup-overlay" id="popupForm">
+          <div class="popup-box">
+            <h3>Guest Details</h3>
+            <input type="text" placeholder="Name" id="name" />
+            <input type="text" placeholder="Flat Number" id="flatNumber" />
+            <input type="number" placeholder="No. of Adults" id="noOfAdults" />
+            <input
+              type="number"
+              placeholder="No. of Kids > 5 years"
+              id="noOfKids"
+            />
+            <select
+              name="tripname"
+              id="tripd"
+              style="
+                width: -webkit-fill-available;
+                height: 40px;
+                color: #28a745;
+              "
+            >
+              <% trips.forEach(trip => { %>
+              <option value="<%= trip._id %>"><%= trip.tripname %></option>
+              <% }) %>
+            </select>
+            <button onclick="submitForm()">Submit</button>
+            <button class="close-btn" onclick="closeForm()">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <hr />
+    <div class="main-data-content" id="main-data-content">
+      <div class="buttonset">
+        <button id="addexpense" title="Add Expense">
+          <i class="fa-solid fa-indian-rupee-sign"></i>
+        </button>
+        <button id="generatesummary" title="Summary">
+          <i class="fa-regular fa-rectangle-list"></i>
+        </button>
+      </div>
+      <div class="table-container">
+        <p style="margin: 20px 20px">Guest List</p>
+        <table id="tripRecordsTable" class="styled-table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Flat #</th>
+              <th>Adults</th>
+              <th>Kids</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <div class="table-container">
+        <p style="margin: 20px 20px">Expense Details</p>
+        <table id="expensesTable" class="styled-table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Flat #</th>
+              <th>Category</th>
+              <th>Amount</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <div class="table-container">
+        <p style="margin: 20px 20px">Expense Summary</p>
+        <table id="Total_expenses" class="styled-table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Flat #</th>
+              <th>Amount</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <div class="popup-overlay" id="expenseform">
+        <div class="popup-box">
+          <h3>Expense Details</h3>
+          <select
+            name="guestname"
+            id="guestname"
+            style="
+              width: -webkit-fill-available;
+              height: 40px;
+              margin-bottom: 10px;
+            "
+          ></select>
+          <input
+            type="text"
+            placeholder="Flat Number"
+            id="flat"
+            readonly
+            style="display: none"
+          />
+          <select
+            name="category"
+            placeholder="Category"
+            id="category"
+            style="width: -webkit-fill-available; height: 40px"
+          >
+            <option value="Transport">Transport</option>
+            <option value="Ticket">Entry Tickets</option>
+            <option value="Food">Food</option>
+            <option value="Fuel">Fuel</option>
+            <option value="Payment">Advance Payment</option>
+            <option value="Others">Others</option>
+          </select>
+          <input type="number" placeholder="Amount" id="amount" />
+          <input
+            type="string"
+            placeholder="Trip Name"
+            id="trip_id"
+            readonly
+            style="display: none"
+          />
+          <button onclick="submitExpenseForm()">Submit</button>
+          <button class="close-btn" onclick="closeExpenseForm()">Close</button>
+        </div>
+      </div>
+      <div id="editAmountPopup" class="popup-overlay" style="display: none">
+        <div class="popup-box">
+          <h3>Edit Amount</h3>
+          <input
+            type="number"
+            id="editAmountInput"
+            placeholder="Enter new amount"
+          />
+          <button id="saveAmountBtn">Save</button>
+          <button onclick="closeEditPopup()">Cancel</button>
+        </div>
+      </div>
+    </div>
+    <hr />
+    <div class="summary" id="summary">
+      <div class="amountdetails">
+        <p id="totalamount">Total Amount Spent:</p>
+        <p id="totaladults">Total Adults:</p>
+        <p id="totalkids">Total Kids < 5yrs:</p>
+      </div>
+    </div>
+    <div id="notification" class="notification"></div>
+    <script src="/js/index.js"></script>
+  </body>
+</html>
