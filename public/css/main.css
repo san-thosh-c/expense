@@ -7,103 +7,76 @@
   font-family: "Poppins", sans-serif;
 }
 
+body {
+  padding-top: 70px; /* Matches nav height */
+}
+
+button{
+    padding: 10px 20px;
+    background-color: #228b22;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
 nav {
   position: fixed;
   top: 0;
   left: 0;
   height: 70px;
   width: 100%;
-  background: var(--header);
+  background: transparent;
+  z-index: 999;
 }
 
 nav .navbar {
   display: flex;
   align-items: center;
   height: 100%;
-  padding: 0 30px;
+  padding: 30px;
   box-shadow: 0 15px 29px rgba(0, 0, 0, 0.1);
-}
-
-.navbar img {
-  height: 50px;
-  width: 100px;
-}
-
-.navbar .name {
-  color: #000;
-  margin: 1rem;
-  font-size: 1rem;
-  transition: color 0.3s ease, font-size 0.3s ease;
 }
 
 .main-content {
   display: flex;
-  background: transparent;
-  top: 100px;
-  position: relative;
-  height: 150px;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  padding: 20px;  
 }
 
 .main-data-content {
   display: none;
-  background: transparent;
-  position: relative;
+  flex-direction: column;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 20px;  
 }
 
-.summary {
-  display: none;
-  background: transparent;
-  position: relative;
+.main-data-content .btn{
+  align-content: end;
 }
 
-.main-content .title {
-  margin-left: 20px;
+.main-data-content .details{
+  display: flex;
 }
 
-.main-content .participants {
-  position: absolute;
-  right: 5%;
+
+.table-container {
+  width: 100%;
+  overflow-x: auto;
 }
 
-#openFormBtn {
-  padding: 10px 60px;
-  background-color: #228b22;
-  color: white;
-  border: none;
-  cursor: pointer;
-  border-radius: 5px;
-  font-size: 16px;
+#Final {
+  width: auto; /* or set a fixed width like 80% */
+  margin: 0 auto;
 }
 
-#addtrip {
-  padding: 10px 60px;
-  background-color: #228b22;
-  color: white;
-  border: none;
-  cursor: pointer;
-  border-radius: 5px;
-  font-size: 16px;
-}
-
-#addexpense {
-  padding: 10px 60px;
-  background-color: #228b22;
-  color: white;
-  border: none;
-  cursor: pointer;
-  border-radius: 5px;
-  font-size: 16px;
-}
-
-#generatesummary {
-  padding: 10px 60px;
-  background-color: #228b22;
-  color: white;
-  border: none;
-  cursor: pointer;
-  border-radius: 5px;
-  font-size: 16px;
-}
 
 .popup-overlay {
   display: none;
@@ -126,6 +99,33 @@ nav .navbar {
   animation: fadeIn 0.3s ease-in-out;
 }
 
+.button-group {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.button-group button {
+  flex: 1;
+}
+
+.popup-box input {
+  width: 100%;
+  padding: 8px;
+  margin: 8px 0;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 16px;
+  box-sizing: border-box;
+}
+
+.popup-box input:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
+}
+
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -137,77 +137,29 @@ nav .navbar {
   }
 }
 
-.popup-box input {
-  width: 100%;
-  padding: 8px;
-  margin: 8px 0;
-  box-sizing: border-box;
+
+
+.participants {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
 }
 
-.popup-box button {
-  padding: 8px 12px;
-  margin-top: 10px;
-  background-color: #28a745;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
+.participants button {
+  flex: 1 1 auto;
+  min-width: 120px;
 }
 
-.close-btn {
-  background-color: #dc3545;
+.participants button span{
+  margin-left: 10px;
 }
 
 .styled-table {
-  width: 25%;
+  width: 90%;
   border-collapse: collapse;
   font-family: "Poppins", sans-serif;
   margin: 20px 20px;
   box-shadow: 20px 20px 12px 0px rgba(0, 0, 0, 0.1);
-}
-
-@media only screen and (max-width: 600px) {
-  .main-data-content {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    margin-right: 35px;
-  }
-
-  .styled-table {
-    width: 100%;
-    margin-top: 70px;
-    box-shadow: none;
-  }
-
-  .navbar .name {
-    color: #000;
-    margin: 1rem;
-    font-size: 10px;
-    transition: color 0.3s ease, font-size 0.3s ease;
-  }
-
-  #addtrip {
-    padding: 10px 20px;
-  }
-  #openFormBtn {
-    padding: 10px 20px;
-    /* background-color: #228b22;
-    color: white;
-    border: none;
-    cursor: pointer;
-    border-radius: 5px;
-    font-size: 16px; */
-  }
-  #addexpense {
-    padding: 10px 20px;
-  }
-}
-
-.buttonset {
-  position: absolute;
-  right: 5%;
-  margin-top: 10px;
 }
 
 .styled-table thead tr {
@@ -231,11 +183,6 @@ nav .navbar {
   background-color: #e0f7fa;
 }
 
-/* .table-container {
-  max-height: 300px;
-  overflow-y: auto;
-} */
-
 table {
   border-collapse: collapse;
   width: 100%;
@@ -252,7 +199,7 @@ td {
   position: fixed;
   top: 20px;
   right: 20px;
-  background-color: orange;
+  background-color: #228b22;
   color: #000;
   padding: 12px 20px;
   border-radius: 6px;
@@ -267,4 +214,69 @@ td {
 .notification.show {
   opacity: 1;
   pointer-events: auto;
+}
+
+
+
+@media (max-width: 768px) {
+
+  .notification{
+    position: fixed;
+    top: 80px;
+    right: 20px;
+    background-color: #228b22;
+    color: #fff;
+    padding: 12px 20px;
+    border-radius: 6px;
+    box-shadow: 7px 9px 8px 7px rgba(0, 0, 0, 0.2);
+    font-family: "Poppins", sans-serif;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.5s ease-in-out;
+    z-index: 1000;
+  }
+
+  .main-content {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .main-data-content{
+   flex-direction: column;
+    align-items: stretch;    
+  }
+
+  .participants {
+    justify-content: center;
+  }
+
+  .styled-table {
+    width: -webkit-fill-available;
+    box-shadow: none;
+  }
+
+  .main-data-content .details {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .popup-box {
+    width: 90%;
+  }
+
+  .navbar .name h1 {
+    font-size: 20px;
+  }
+
+  button {
+    font-size: 14px;
+    padding: 8px 12px;
+  }
+
+  .table-container {
+    width: 100%;
+    overflow-x: auto;
+  }
+
+
 }
