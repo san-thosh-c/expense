@@ -6,6 +6,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const select = document.querySelector("select[name='tripname1']");
   const tableBody = document.querySelector("#tripRecordsTable tbody");
   const expTableBody = document.querySelector("#Total_expenses tbody");
+  const finalTable = document.querySelector("#Final tbody");
   const exptable = document.querySelector("#expensesTable tbody");
   const mainBody = document.getElementById("main-data-content");
   const expense_popup = document.getElementById("addexpense");
@@ -14,6 +15,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const editPopup = document.getElementById("editAmountPopup");
   const editAmountInput = document.getElementById("editAmountInput");
   const saveAmountBtn = document.getElementById("saveAmountBtn");
+  const saveGuestDetails = document.getElementById("saveGuestDetails");
   const summary = document.getElementById("summary");
   const generatesummary = document.getElementById("generatesummary");
 
@@ -79,7 +81,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   };
 
   generatesummary.onclick = async () => {
-    summary.style.display = "flex";
     const tripId = select.value;
     try {
       const response_exp = await fetch(`/api/trips/${tripId}`);
@@ -103,15 +104,145 @@ document.addEventListener("DOMContentLoaded", async () => {
           row.innerHTML = `
           <td>${record.guestname}</td>
           <td>${record.flatNumber}</td>
-          <td>${record.amount}</td>
+          <td>₹ ${record.amount}</td>
         `;
           expTableBody.appendChild(row);
+        });
+
+        let step1 = await final_summary1(tripId, summary);
+        let step2 = await final_summary2(tripId);
+        let step3 = await final_summary3(step1,step2);
+        let step4 = await final_summary4(step3);
+        console.log("step4 = ", step4);
+        finalTable.innerHTML = "";
+        step4.forEach((record) => {
+          const row = document.createElement("tr");
+          row.innerHTML = `
+          <td>${record.name}</td>
+          <td>₹ ${record.amount}</td>
+          <td>${record.totalhc}</td>
+          <td>₹ ${record.totalexpense}</td>
+          <td>₹ ${record.transport}</td>
+          <td>₹ ${record.totalCost}</td>
+          <td>₹ ${record.tobepaid}</td>
+          <td>₹ ${record.toReceive}</td>
+        `;
+          finalTable.appendChild(row);
         });
       }
     } catch (err) {
       showNotification("Failed to load Details");
     }
   };
+  async function final_summary1(trip_id, summary) {
+  try {
+    const response_user = await fetch(`/api/trip/${trip_id}`);
+    const records_user = await response_user.json();
+    let final = [];
+    for (let user of records_user) {
+      let summary_obj = summary.filter((obj) => Number(obj.flatNumber) === Number(user.flatNumber));
+      if (summary_obj.length > 0){
+        let data = {};
+        data.name = summary_obj[0].guestname;
+        data.amount = summary_obj[0].amount;
+        data.adults = user.adults;
+        data.kids = user.kids;
+        data.totalhc = Number(user.adults) + Number(user.kids);
+        final.push(data);
+      }
+      else {
+        let data = {};
+        data.name = user.guestname;
+        data.amount = 0;
+        data.adults = user.adults;
+        data.kids = user.kids;
+        data.totalhc = Number(user.adults) + Number(user.kids);
+        final.push(data);
+      }
+    }
+
+    return final;
+  } catch (err) {
+    console.log("Error Occured");
+  }
+}
+
+  async function final_summary2(tripId) {
+
+    try {
+      const req_exp = await fetch(`/api/trips/${tripId}`);
+      const res_exp = await req_exp.json();
+      const result = Object.values(
+        res_exp.reduce((acc, item) => {
+          if (!acc[item.category]) {
+            acc[item.category] = { category: item.category, amount: 0 };
+          }
+          acc[item.category].amount += item.amount;
+          return acc;
+        }, {})
+      );
+      return result;
+    } catch(err){
+      console.log("Error occured at step 2");
+    }
+
+
+
+  }
+
+  async function final_summary3(step1, step2) {
+    console.log("step1 = ", step1);
+    console.log("step2 = ", step2);
+    let final = [];
+    const totalAmount = step2
+      .filter(item => item.category !== "Transport")
+      .reduce((sum, item) => sum + item.amount, 0);
+
+    const totalTransport = step2
+      .filter(obj => obj.category === "Transport")
+      .reduce((sum,item) => sum + item.amount, 0);
+    const totalAdults = step1.reduce((sum, person) => sum + person.adults, 0);
+    const totalKids = step1.reduce((sum, person) => sum + person.kids, 0);
+    const perhead = totalAmount / totalAdults;
+    const perhead_transport = totalTransport / (totalAdults + totalKids);
+
+    console.log("totalAmount = ", totalAmount);
+    console.log("totalTransport = ", totalTransport);
+    console.log("totalAdults = ", totalAdults);
+    console.log("totalKids = ", totalKids);
+    console.log("perhead = ", Math.floor(perhead).toFixed(2));
+    console.log("perhead_transport = ", Math.floor(perhead_transport).toFixed(2));
+    for (let t1 of step1){
+      let data = {};
+      data.name = t1.name;
+      data.amount = t1.amount;
+      data.adults = t1.adults;
+      data.kids = t1.kids;
+      data.totalhc = t1.totalhc;
+      data.totalexpense = Math.floor(perhead).toFixed(2) * t1.adults;
+      data.transport = Math.floor(perhead_transport).toFixed(2) * (t1.adults + t1.kids);
+      final.push(data);
+    }
+    return final;
+  }
+
+  async function final_summary4(step3){
+    for (let t1 of step3){
+      t1.totalCost = (t1.totalexpense + t1.transport);
+      let balance = (t1.totalexpense + t1.transport) - t1.amount;
+      console.log("balance = ", balance);
+      if (balance < 0){
+        t1.toReceive = balance;
+        t1.tobepaid = 0;
+      }
+      if (balance > 0){
+        t1.tobepaid = balance;
+        t1.toReceive = 0;
+      }
+    }
+    return step3;
+  }
+
 
   openBtn.onclick = async () => {
     popup.style.display = "flex";
@@ -257,7 +388,6 @@ document.addEventListener("DOMContentLoaded", async () => {
           const row = document.createElement("tr");
           row.innerHTML = `
             <td>${record.guestname}</td>
-            <td>${record.flatNumber}</td>
             <td>${record.category}</td>
             <td>${record.amount}</td>
           `;
@@ -284,9 +414,11 @@ document.addEventListener("DOMContentLoaded", async () => {
         tableBody.appendChild(emptyRow);
         return;
       }
+//fetch guest details      
       records.forEach((record) => {
         mainBody.style.display = "flex";
         const row = document.createElement("tr");
+        row.setAttribute("data-id", record._id);
         row.innerHTML = `
         <td>${record.guestname}</td>
         <td>${record.flatNumber}</td>
@@ -305,15 +437,15 @@ document.addEventListener("DOMContentLoaded", async () => {
         exptable.appendChild(emptyRow);
         return;
       }
+//fetch Expense details      
       records_exp.forEach((record) => {
         mainBody.style.display = "flex";
         const row = document.createElement("tr");
         row.setAttribute("data-id", record._id);
         row.innerHTML = `
         <td>${record.guestname}</td>
-        <td>${record.flatNumber}</td>
         <td>${record.category}</td>
-        <td>${record.amount}</td>
+        <td>₹ ${record.amount}</td>
       `;
         exptable.appendChild(row);
       });
@@ -391,7 +523,63 @@ document.addEventListener("DOMContentLoaded", async () => {
     closeEditPopup();
   });
 
-  window.closeEditPopup = function () {
+  document.getElementById("tripRecordsTable").addEventListener("click", function (e) {
+    const row = e.target.closest("tr");
+    console.log("row = ", row);
+    if (!row || row.rowIndex === 0) return;
+    const adults = row.cells[2].textContent;
+    const kids = row.cells[3].textContent;
+    const f_no = row.cells[1].textContent;
+     selectedRecordId = row.dataset.id
+     console.log("selectedRecordId = ", selectedRecordId);
+     window.selectedRow = row;
+     fno.value = f_no;
+    document.getElementById("fno").value = f_no;
+    document.getElementById("editAdults").value = adults;
+    document.getElementById("editKids").value = kids;
+    document.getElementById("editGuestPopup").style.display = "flex";
+  });
+
+  saveGuestDetails.addEventListener("click", async () => {
+      const newflat = document.getElementById("fno").value;
+      const newAdults = document.getElementById("editAdults").value;
+      const newKids = document.getElementById("editKids").value;
+      if (window.selectedRow) {
+        window.selectedRow.cells[1].textContent = newflat;
+        window.selectedRow.cells[2].textContent = newAdults;
+        window.selectedRow.cells[3].textContent = newKids;
+      }
+      
+      try {
+            const response = await fetch(`/update-guest/${selectedRecordId}`, {
+              method: "PUT",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({ flatNumber: newflat, adults:newAdults, kids: newKids  }),
+            });
+
+            const result = await response.json();
+            if (result.success) {
+              showNotification("Amount updated successfully!");
+            } else {
+              showNotification("Failed to update amount");
+            }
+          } catch (err) {
+            console.error("Update error:", err);
+            showNotification("Error updating amount");
+          }
+      closeGuestPopup();
+
+  });
+
+
+
+ window.closeGuestPopup = function() {
+  document.getElementById("editGuestPopup").style.display = "none";
+}
+
+window.closeEditPopup = function () {
     editPopup.style.display = "none";
   };
 });
@@ -405,3 +593,4 @@ function showNotification(message, duration = 3000) {
     notification.classList.remove("show");
   }, duration);
 }
+
