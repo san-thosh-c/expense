@@ -544,7 +544,10 @@ document.addEventListener("DOMContentLoaded", async () => {
       const newflat = document.getElementById("fno").value;
       const newAdults = document.getElementById("editAdults").value;
       const newKids = document.getElementById("editKids").value;
+      // const newguestName = document.getElementById("editguestname").value;
+      
       if (window.selectedRow) {
+        // window.selectedRow.cells[0].textContent = newguestName;
         window.selectedRow.cells[1].textContent = newflat;
         window.selectedRow.cells[2].textContent = newAdults;
         window.selectedRow.cells[3].textContent = newKids;
@@ -561,19 +564,17 @@ document.addEventListener("DOMContentLoaded", async () => {
 
             const result = await response.json();
             if (result.success) {
-              showNotification("Amount updated successfully!");
+              showNotification("Guest updated successfully!");
             } else {
-              showNotification("Failed to update amount");
+              showNotification("Failed to update Guest");
             }
           } catch (err) {
             console.error("Update error:", err);
-            showNotification("Error updating amount");
+            showNotification("Error updating Guest");
           }
       closeGuestPopup();
 
   });
-
-
 
  window.closeGuestPopup = function() {
   document.getElementById("editGuestPopup").style.display = "none";
