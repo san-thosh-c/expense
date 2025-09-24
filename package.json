@@ -18,6 +18,9 @@
     "dev": "nodemon app.js",
     "build": "echo 'no build step'"
   },
+  "engines": {
+  "node": ">=18.18.0 <=22.14.0"
+},
   "author": "",
   "license": "ISC",
   "description": ""
