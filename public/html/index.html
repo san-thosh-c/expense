@@ -21,7 +21,7 @@
     <nav>
       <div class="navbar">
         <div class="logo">
-          <img src="image/logo.png" height="80px" width="80px" />
+          <img src="image/newlogo.png" height="70px" width="70px" />
         </div>
         <div class="name">
           <h1>Expense Tracker</h1>
@@ -34,127 +34,127 @@
       </div>
       <div class="participants">
         <button id="addtrip" title="Add a Trip">
-          <i class="fa-solid fa-suitcase"></i>
+          <i class="fa-solid fa-suitcase"></i><span>Add Trip</span>
         </button>
         <button id="openFormBtn" title="Add a New Participants">
-          <i class="fa-solid fa-people-pulling"></i>
+          <i class="fa-solid fa-people-pulling"></i><span>Add Guest</span>
         </button>
+                  <button id="addexpense" title="Add Expense">
+            <i class="fa-solid fa-indian-rupee-sign"></i><span>Add Expense</span>
+          </button>
+          <button id="generatesummary" title="Summary">
+            <i class="fa-regular fa-rectangle-list"></i><span>Summary</span>
+          </button>
+      </div>
+    </div>
+
+
+    <hr />
+
+    <div class="main-data-content" id="main-data-content">
+      <div class="details">
+        <div class="table-container">
+          <p style="margin: 20px 20px; text-align: center; font-weight: 600;">Guest List</p>
+          <table id="tripRecordsTable" class="styled-table">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Flat #</th>
+                <th>Adults</th>
+                <th>Kids</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        <div class="table-container">
+          <p style="margin: 20px 20px; text-align: center; font-weight: 600">Expense Details</p>
+          <table id="expensesTable" class="styled-table">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Category</th>
+                <th>Amount</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        <div class="table-container">
+          <p style="margin: 20px 20px; text-align: center; font-weight: 600">Expense Summary</p>
+          <table id="Total_expenses" class="styled-table">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Flat #</th>
+                <th>Amount</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+      <div class="summary">
+        <div class="table-container">
+          <p style="margin: 20px 20px; text-align: center; font-weight: 600">Final Summary</p>
+          <table id="Final" class="styled-table">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Amount Spent</th>
+                <th>Head Count</th>
+                <th>Expense</th>
+                <th>Transport Amount</th>
+                <th>Total Cost</th>
+                <th>To Be Paid</th>
+                <th>To Receive</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+
+    <div id="notification" class="notification"></div>
 
         <div class="popup-overlay" id="trippopupForm">
-          <div class="popup-box">
-            <h3>Trip Details</h3>
-            <input type="text" placeholder="Name" id="tripname" />
-            <button onclick="submitTripForm()">Submit</button>
-            <button class="close-btn" onclick="closeTripForm()">Close</button>
-          </div>
-        </div>
-
-        <div class="popup-overlay" id="popupForm">
-          <div class="popup-box">
-            <h3>Guest Details</h3>
-            <input type="text" placeholder="Name" id="name" />
-            <input type="text" placeholder="Flat Number" id="flatNumber" />
-            <input type="number" placeholder="No. of Adults" id="noOfAdults" />
-            <input
-              type="number"
-              placeholder="No. of Kids > 5 years"
-              id="noOfKids"
-            />
-            <select
-              name="tripname"
-              id="tripd"
-              style="
-                width: -webkit-fill-available;
-                height: 40px;
-                color: #28a745;
-              "
-            >
-              <% trips.forEach(trip => { %>
-              <option value="<%= trip._id %>"><%= trip.tripname %></option>
-              <% }) %>
-            </select>
-            <button onclick="submitForm()">Submit</button>
-            <button class="close-btn" onclick="closeForm()">Close</button>
-          </div>
+      <div class="popup-box">
+        <h3>Trip Details</h3>
+        <input type="text" placeholder="Name" id="tripname" />
+        <div class="button-group">
+        <button onclick="submitTripForm()">Submit</button>
+        <button class="close-btn" onclick="closeTripForm()">Close</button>
         </div>
       </div>
     </div>
-    <hr />
-    <div class="main-data-content" id="main-data-content">
-      <div class="buttonset">
-        <button id="addexpense" title="Add Expense">
-          <i class="fa-solid fa-indian-rupee-sign"></i>
-        </button>
-        <button id="generatesummary" title="Summary">
-          <i class="fa-regular fa-rectangle-list"></i>
-        </button>
+
+    <div class="popup-overlay" id="popupForm">
+      <div class="popup-box">
+        <h3>Guest Details</h3>
+        <input type="text" placeholder="Name" id="name" />
+        <input type="text" placeholder="Flat Number" id="flatNumber" />
+        <input type="number" placeholder="No. of Adults" id="noOfAdults" />
+        <input type="number" placeholder="No. of Kids > 5 years" id="noOfKids" />
+        <select name="tripname" id="tripd" style="width: -webkit-fill-available; height: 40px; color: #28a745; ">
+          <% trips.forEach(trip => { %>
+          <option value="<%= trip._id %>"><%= trip.tripname %></option>
+          <% }) %>
+        </select>
+        <div class="button-group">
+          <button onclick="submitForm()">Submit</button>
+          <button class="close-btn" onclick="closeForm()">Close</button>
+        </div>
       </div>
-      <div class="table-container">
-        <p style="margin: 20px 20px">Guest List</p>
-        <table id="tripRecordsTable" class="styled-table">
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Flat #</th>
-              <th>Adults</th>
-              <th>Kids</th>
-            </tr>
-          </thead>
-          <tbody></tbody>
-        </table>
-      </div>
-      <div class="table-container">
-        <p style="margin: 20px 20px">Expense Details</p>
-        <table id="expensesTable" class="styled-table">
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Flat #</th>
-              <th>Category</th>
-              <th>Amount</th>
-            </tr>
-          </thead>
-          <tbody></tbody>
-        </table>
-      </div>
-      <div class="table-container">
-        <p style="margin: 20px 20px">Expense Summary</p>
-        <table id="Total_expenses" class="styled-table">
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Flat #</th>
-              <th>Amount</th>
-            </tr>
-          </thead>
-          <tbody></tbody>
-        </table>
-      </div>
-      <div class="popup-overlay" id="expenseform">
+    </div>
+
+    <div class="popup-overlay" id="expenseform">
         <div class="popup-box">
           <h3>Expense Details</h3>
-          <select
-            name="guestname"
-            id="guestname"
-            style="
-              width: -webkit-fill-available;
-              height: 40px;
-              margin-bottom: 10px;
-            "
-          ></select>
-          <input
-            type="text"
-            placeholder="Flat Number"
-            id="flat"
-            readonly
-            style="display: none"
-          />
-          <select
-            name="category"
-            placeholder="Category"
-            id="category"
-            style="width: -webkit-fill-available; height: 40px"
-          >
+          <select name="guestname" id="guestname" style=" width: -webkit-fill-available; height: 40px; margin-bottom: 10px;"></select>
+          <input type="text" placeholder="Flat Number" id="flat" readonly style="display: none"/>
+          <select name="category" placeholder="Category" id="category" style="width: -webkit-fill-available; height: 40px">
             <option value="Transport">Transport</option>
             <option value="Ticket">Entry Tickets</option>
             <option value="Food">Food</option>
@@ -163,39 +163,35 @@
             <option value="Others">Others</option>
           </select>
           <input type="number" placeholder="Amount" id="amount" />
-          <input
-            type="string"
-            placeholder="Trip Name"
-            id="trip_id"
-            readonly
-            style="display: none"
-          />
+          <input type="string" placeholder="Trip Name"  id="trip_id"  readonly   style="display: none" />
+          <div class="button-group">
           <button onclick="submitExpenseForm()">Submit</button>
           <button class="close-btn" onclick="closeExpenseForm()">Close</button>
+          </div>
         </div>
       </div>
       <div id="editAmountPopup" class="popup-overlay" style="display: none">
         <div class="popup-box">
           <h3>Edit Amount</h3>
-          <input
-            type="number"
-            id="editAmountInput"
-            placeholder="Enter new amount"
-          />
+          <input type="number" id="editAmountInput" placeholder="Enter new amount"  />
           <button id="saveAmountBtn">Save</button>
           <button onclick="closeEditPopup()">Cancel</button>
         </div>
       </div>
-    </div>
-    <hr />
-    <div class="summary" id="summary">
-      <div class="amountdetails">
-        <p id="totalamount">Total Amount Spent:</p>
-        <p id="totaladults">Total Adults:</p>
-        <p id="totalkids">Total Kids < 5yrs:</p>
+
+      <div id="editGuestPopup" class="popup-overlay" style="display: none;">
+        <div class="popup-box">
+          <h3>Edit Guest Details</h3>
+          <input type="number" id="fno" placeholder="Flat Number" />
+          <input type="number" id="editAdults" placeholder="No. of Adults" />
+          <input type="number" id="editKids" placeholder="No. of Kids" />
+          <button id="saveGuestDetails">Save</button>
+          <button class="close-btn" onclick="closeGuestPopup()">Cancel</button>
+        </div>
       </div>
-    </div>
-    <div id="notification" class="notification"></div>
+
+
+
     <script src="/js/index.js"></script>
   </body>
 </html>
