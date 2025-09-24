@@ -4,6 +4,7 @@ const mongoose = require("mongoose");
 const bodyparser = require("body-parser");
 const path = require("path");
 const cors = require("cors");
+app.use(express.json());
 app.use(cors());
 app.use(express.static("public"));
 app.use(bodyparser.urlencoded({ extended: true }));
@@ -219,8 +220,39 @@ app.put("/update-expense/:id", async (req, res) => {
   }
 });
 
+app.put("/update-guest/:id", async (req, res) => {
+    console.log("req", req.body);
+  const guestId = req.params.id;
+  const { flatNumber, adults, kids } = req.body;
+
+  try {
+    const updatedGuest = await User.findByIdAndUpdate(
+      guestId,
+      { flatNumber, adults, kids },
+      { new: true }
+    );
+
+    if (!updatedGuest) {
+      return res.status(404).json({
+        success: false,
+        message: "Guest not found",
+      });
+    }
+    return res.status(200).json({
+      success: true,
+      message: "Guest details updated successfully",
+      data: updatedGuest,
+    });
+  } catch (err) {
+    console.error("Error updating guest:", err);
+    return res.status(500).json({
+      success: false,
+      message: "Server error while updating guest",
+    });
+  }
+});
+
 // Start the server on port 3000
 app.listen(3000, () => {
   console.log("Server running on port 3000");
 });
-
