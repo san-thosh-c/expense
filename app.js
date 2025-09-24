@@ -10,9 +10,10 @@ app.use(bodyparser.urlencoded({ extended: true }));
 app.use(bodyparser.json());
 app.set("view engine", "ejs");
 
-mongoose.connect(
-  "mongodb+srv://admin_db:Welcome%402468@cluster0.6jgdplr.mongodb.net/Expense_Tracker"
-);
+mongoose.connect("mongodb+srv://admin_db:Welcome%402468@cluster0.6jgdplr.mongodb.net/Expense_Tracker", {
+  tls: true,
+}).then(() => console.log("MongoDB connected successfully"))
+.catch(err => console.error("MongoDB connection error:", err));
 
 const tripSchema = new mongoose.Schema({
   tripname: { type: String, required: true },
@@ -222,3 +223,4 @@ app.put("/update-expense/:id", async (req, res) => {
 app.listen(3000, () => {
   console.log("Server running on port 3000");
 });
+
