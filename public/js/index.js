@@ -103,7 +103,6 @@ document.addEventListener("DOMContentLoaded", async () => {
           const row = document.createElement("tr");
           row.innerHTML = `
           <td>${record.guestname}</td>
-          <td>${record.flatNumber}</td>
           <td>₹ ${record.amount}</td>
         `;
           expTableBody.appendChild(row);
@@ -469,9 +468,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         summary.forEach((record) => {
           const row = document.createElement("tr");
           row.innerHTML = `
-          <td>${record.guestname}</td>
-          <td>${record.flatNumber}</td>
-          <td>${record.amount}</td>
+          <td>${record.guestname}</td>          
+          <td>₹ ${record.amount}</td>
         `;
           expTableBody.appendChild(row);
         });
@@ -490,8 +488,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     const row = e.target.closest("tr");
     if (!row || row.parentNode.tagName === "THEAD") return;
     selectedExpenseRow = row;
+    console.log(selectedExpenseRow);
     selectedRecordId = row.dataset.id;
-    const currentAmount = row.cells[3].textContent;
+    console.log(row.cells);
+    const currentAmount = row.cells[2].textContent;
     editAmountInput.value = currentAmount;
     editPopup.style.display = "flex";
   });
@@ -499,7 +499,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   saveAmountBtn.addEventListener("click", async () => {
     const newAmount = editAmountInput.value;
     if (selectedExpenseRow) {
-      selectedExpenseRow.cells[3].textContent = newAmount;
+      selectedExpenseRow.cells[2].textContent = newAmount;
       try {
         const response = await fetch(`/update-expense/${selectedRecordId}`, {
           method: "PUT",
