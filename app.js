@@ -131,11 +131,13 @@ app.post("/addtrip", async (req, res) => {
 
 app.post("/addguest", async (req, res) => {
   try {
+    console.log("Guest request = ", req.body);
     const { guestname, flatNumber, adults, kids, trip_id } = req.body;
     const numAdults = parseInt(adults) || 0;
     const numKids = parseInt(kids) || 0;
     const fn = flatNumber;
-    const existingUser = await User.findOne({ flatNumber: fn });
+    const existingUser = await User.findOne({ flatNumber: fn, trip_id: trip_id });
+    console.log("existingUser = ", existingUser);
     if (existingUser) {
       return res.status(409).json({
         success: false,
@@ -166,10 +168,37 @@ app.post("/addguest", async (req, res) => {
 app.post("/addexpense", async (req, res) => {
   try {
     const { guestname, flatNumber, trip_id, category, amount } = req.body;
+    console.log("req", req);
     const numamount = Number(amount);
     const newExp = new expense({
       guestname,
       flatNumber,
+      category,
+      amount: numamount,
+      trip_id,
+    });
+    await newExp.save();
+    return res.status(201).json({
+      success: true,
+      message: "Expense created successfully!",
+    });
+  } catch (err) {
+    console.error("Error occurred while creating Expenses:", err);
+    return res.status(500).json({
+      success: false,
+      message: "An error occurred during Expense addition.",
+    });
+  }
+});
+
+app.post("/addsettlement", async (req, res) => {
+  try {
+    const { trip_id, category, amount } = req.body;
+    console.log("req", req.body);
+    const numamount = Number(amount);
+    const newExp = new expense({
+      guestname: "settlement", 
+      flatNumber: "000",  
       category,
       amount: numamount,
       trip_id,
