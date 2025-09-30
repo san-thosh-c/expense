@@ -39,8 +39,11 @@
         <button id="openFormBtn" title="Add a New Participants">
           <i class="fa-solid fa-people-pulling"></i><span>Add Guest</span>
         </button>
-                  <button id="addexpense" title="Add Expense">
+        <button id="addexpense" title="Add Expense">
             <i class="fa-solid fa-indian-rupee-sign"></i><span>Add Expense</span>
+          </button>
+          <button id="settlement" title="Add Settlement">
+            <i class="fa-solid fa-indian-rupee-sign"></i><span>Add Settlement</span>
           </button>
           <button id="generatesummary" title="Summary">
             <i class="fa-regular fa-rectangle-list"></i><span>Summary</span>
@@ -119,7 +122,7 @@
 
     <div id="notification" class="notification"></div>
 
-        <div class="popup-overlay" id="trippopupForm">
+    <div class="popup-overlay" id="trippopupForm">
       <div class="popup-box">
         <h3>Trip Details</h3>
         <input type="text" placeholder="Name" id="tripname" />
@@ -155,7 +158,7 @@
           <select name="guestname" id="guestname" style=" width: -webkit-fill-available; height: 40px; margin-bottom: 10px;"></select>
           <input type="text" placeholder="Flat Number" id="flat" readonly style="display: none"/>
           <select name="category" placeholder="Category" id="category" style="width: -webkit-fill-available; height: 40px">
-            <option value="Transport">Transport</option>
+            <!-- <option value="Transport">Transport</option> -->
             <option value="Ticket">Entry Tickets</option>
             <option value="Food">Food</option>
             <option value="Fuel">Fuel</option>
@@ -169,27 +172,44 @@
           <button class="close-btn" onclick="closeExpenseForm()">Close</button>
           </div>
         </div>
-      </div>
-      <div id="editAmountPopup" class="popup-overlay" style="display: none">
-        <div class="popup-box">
-          <h3>Edit Amount</h3>
-          <input type="number" id="editAmountInput" placeholder="Enter new amount"  />
-          <button id="saveAmountBtn">Save</button>
-          <button onclick="closeEditPopup()">Cancel</button>
-        </div>
-      </div>
+    </div>
 
-      <div id="editGuestPopup" class="popup-overlay" style="display: none;">
+    <div class="popup-overlay" id="settlementform">
         <div class="popup-box">
-          <h3>Edit Guest Details</h3>
-          <!-- <input type="text" id="editguestname" placeholder="Guest Name" /> -->
-          <input type="number" id="fno" placeholder="Flat Number" />
-          <input type="number" id="editAdults" placeholder="No. of Adults" />
-          <input type="number" id="editKids" placeholder="No. of Kids" />
-          <button id="saveGuestDetails">Save</button>
-          <button class="close-btn" onclick="closeGuestPopup()">Cancel</button>
+          <h3>Settlement Details</h3>
+          <select name="settlementname" placeholder="Settlement" id="settlement_category" style="width: -webkit-fill-available; height: 40px">
+            <option value="Transport">Transport</option>
+            <option value="Hotel">Hotel Accomodation</option>
+          </select>
+          <input type="number" placeholder="Amount" id="settlementamount" />
+          <input type="string" placeholder="Trip Name"  id="trip_id_s"  readonly   style="display: none" />
+          <div class="button-group">
+          <button onclick="submitsettlementForm()">Submit</button>
+          <button class="close-btn" onclick="settlementform()">Close</button>
+          </div>
         </div>
+    </div>    
+
+    <div id="editAmountPopup" class="popup-overlay" style="display: none">
+      <div class="popup-box">
+        <h3>Edit Amount</h3>
+        <input type="number" id="editAmountInput" placeholder="Enter new amount"  />
+        <button id="saveAmountBtn">Save</button>
+        <button onclick="closeEditPopup()">Cancel</button>
       </div>
+    </div>
+
+    <div id="editGuestPopup" class="popup-overlay" style="display: none;">
+      <div class="popup-box">
+        <h3>Edit Guest Details</h3>
+        <!-- <input type="text" id="editguestname" placeholder="Guest Name" /> -->
+        <input type="number" id="fno" placeholder="Flat Number" />
+        <input type="number" id="editAdults" placeholder="No. of Adults" />
+        <input type="number" id="editKids" placeholder="No. of Kids" />
+        <button id="saveGuestDetails">Save</button>
+        <button class="close-btn" onclick="closeGuestPopup()">Cancel</button>
+      </div>
+    </div>
 
 
 
