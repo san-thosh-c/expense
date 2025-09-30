@@ -10,7 +10,9 @@ document.addEventListener("DOMContentLoaded", async () => {
   const exptable = document.querySelector("#expensesTable tbody");
   const mainBody = document.getElementById("main-data-content");
   const expense_popup = document.getElementById("addexpense");
+  const settlement_popup = document.getElementById("settlement");
   const popupexpense = document.getElementById("expenseform");
+  const popupsettlment = document.getElementById("settlementform");
   const selectguest = document.querySelector("select[name='guestname']");
   const editPopup = document.getElementById("editAmountPopup");
   const editAmountInput = document.getElementById("editAmountInput");
@@ -23,6 +25,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const response = await fetch("/api/trips");
     const trips = await response.json();
     select.innerHTML = "";
+    console.log("Tripid = ", trips);
     const defaultOption = document.createElement("option");
     defaultOption.textContent = "Select a trip";
     defaultOption.disabled = true;
@@ -48,6 +51,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     document.getElementById("trip_id").value = selectedTripId;
     // console.log("Selected trip number:", selectedGuestName);
   });
+
+  settlement_popup.onclick = async() => {
+    popupsettlment.style.display = "flex";
+    popupsettlment.style.zIndex = "1";
+  };
 
   expense_popup.onclick = async () => {
     popupexpense.style.display = "flex";
@@ -79,6 +87,10 @@ document.addEventListener("DOMContentLoaded", async () => {
   window.closeExpenseForm = function () {
     popupexpense.style.display = "none";
   };
+
+  window.closeSettlementForm = function(){
+    popupsettlment.style.display="none";
+  }
 
   generatesummary.onclick = async () => {
     const tripId = select.value;
@@ -348,6 +360,57 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     closeForm();
   };
+
+  window.submitsettlementForm = async function () {
+    const settlementname = document.getElementById("settlement_category").value;
+    const s_amount = document.getElementById("settlementamount").value;
+    console.log("settlementname = ", select.value);
+    try{
+        const response = await fetch("/addsettlement", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          trip_id: select.value,
+          category: settlementname,
+          amount: s_amount,
+        }),
+      });
+      const result = await response.json();
+      if (result.success) {
+        showNotification("Settlement added successfully!");
+        const response_exp = await fetch(`/api/trips/${select.value}`);
+        const records_exp = await response_exp.json();
+        exptable.innerHTML = "";
+        if (records_exp.length === 0) {
+          const emptyRow = document.createElement("tr");
+          emptyRow.innerHTML = `<td colspan="5">No records found for this trip</td>`;
+          exptable.appendChild(emptyRow);
+          return;
+        }
+        records_exp.forEach((record) => {
+          mainBody.style.display = "flex";
+          const row = document.createElement("tr");
+          row.innerHTML = `
+            <td>${record.guestname}</td>
+            <td>${record.category}</td>
+            <td>${record.amount}</td>
+          `;
+          exptable.appendChild(row);
+        });
+      } else {
+        showNotification(result.message);
+      }
+
+    } catch(err){
+      console.error("Error:", err);
+    
+    }
+    console.log("Hi");
+    closeSettlementForm();
+    
+  }
 
   window.submitExpenseForm = async function () {
     const guestname = document.getElementById("guestname").value;
