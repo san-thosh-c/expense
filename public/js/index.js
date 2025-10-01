@@ -88,7 +88,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     popupexpense.style.display = "none";
   };
 
-  window.closeSettlementForm = function(){
+  window.closesettlementform = function(){
     popupsettlment.style.display="none";
   }
 
@@ -407,8 +407,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       console.error("Error:", err);
     
     }
-    console.log("Hi");
-    closeSettlementForm();
+    closesettlementform();
     
   }
 
