@@ -4,6 +4,7 @@ const mongoose = require("mongoose");
 const bodyparser = require("body-parser");
 const path = require("path");
 const cors = require("cors");
+const { type } = require("os");
 app.use(express.json());
 app.use(cors());
 app.use(express.static("public"));
@@ -41,6 +42,14 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  veg:{
+    type: Number,
+    required: true,
+  },
+  nv: {
+    type: Number,
+    required: true,   
+  }
 });
 
 const expenseSchema = new mongoose.Schema({
@@ -252,12 +261,12 @@ app.put("/update-expense/:id", async (req, res) => {
 app.put("/update-guest/:id", async (req, res) => {
     console.log("req", req.body);
   const guestId = req.params.id;
-  const { flatNumber, adults, kids } = req.body;
+  const { flatNumber, adults, kids, veg, nv } = req.body;
 
   try {
     const updatedGuest = await User.findByIdAndUpdate(
       guestId,
-      { flatNumber, adults, kids },
+      { flatNumber, adults, kids, veg, nv },
       { new: true }
     );
 
