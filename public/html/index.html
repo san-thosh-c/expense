@@ -36,7 +36,7 @@
         <button id="addtrip" title="Add a Trip">
           <i class="fa-solid fa-suitcase"></i><span>Add Trip</span>
         </button>
-        <button id="openFormBtn" title="Add a New Participants">
+        <button id="openFormBtn" title="Add a New Participants" disabled >
           <i class="fa-solid fa-people-pulling"></i><span>Add Guest</span>
         </button>
         <button id="addexpense" title="Add Expense">
@@ -65,6 +65,8 @@
                   <th>Flat #</th>
                   <th>Adults</th>
                   <th>Kids</th>
+                  <th>Veg</th>
+                  <th>NV</th>
                 </tr>
               </thead>
               <tbody></tbody>
@@ -100,6 +102,11 @@
       <div class="summary">
         <div class="table-container">
           <p style="margin: 20px 20px; text-align: center; font-weight: 600">Final Summary</p>
+          <div>
+            <p style="margin: 20px 20px; text-align: center;font-size: 13px;font-weight: 600;" id="tf"></p>
+            <p style="margin: 20px 20px; text-align: center;font-size: 13px;font-weight: 600;" id="tveg"></p>
+            <p style="margin: 20px 20px; text-align: center;font-size: 13px;font-weight: 600;" id="tnveg"></p>
+          </div>
           <table id="Final" class="styled-table">
             <thead>
               <tr>
@@ -108,6 +115,7 @@
                 <th>Head Count</th>
                 <th>Expense</th>
                 <th>Transport Amount</th>
+                <th>Food</th>
                 <th>Total Cost</th>
                 <th>To Be Paid</th>
                 <th>To Receive</th>
@@ -140,6 +148,8 @@
         <input type="text" placeholder="Flat Number" id="flatNumber" />
         <input type="number" placeholder="No. of Adults" id="noOfAdults" />
         <input type="number" placeholder="No. of Kids > 5 years" id="noOfKids" />
+        <input type="number" placeholder="No of Veg" id="veg">
+        <input type="number" placeholder="No of NV" id="nv">
         <select name="tripname" id="tripd" style="width: -webkit-fill-available; height: 40px; color: #28a745; ">
           <% trips.forEach(trip => { %>
           <option value="<%= trip._id %>"><%= trip.tripname %></option>
@@ -160,7 +170,8 @@
           <select name="category" placeholder="Category" id="category" style="width: -webkit-fill-available; height: 40px">
             <!-- <option value="Transport">Transport</option> -->
             <option value="Ticket">Entry Tickets</option>
-            <option value="Food">Food</option>
+            <option value="VegFood">Veg-Food</option>
+            <option value="NVegFood">NonVeg-Food</option>
             <option value="Fuel">Fuel</option>
             <option value="Payment">Advance Payment</option>
             <option value="Others">Others</option>
@@ -206,6 +217,8 @@
         <input type="number" id="fno" placeholder="Flat Number" />
         <input type="number" id="editAdults" placeholder="No. of Adults" />
         <input type="number" id="editKids" placeholder="No. of Kids" />
+        <input type="number" id="editVeg" placeholder="No. of Veg" />
+         <input type="number" id="editNV" placeholder="No. of NV" />
         <button id="saveGuestDetails">Save</button>
         <button class="close-btn" onclick="closeGuestPopup()">Cancel</button>
       </div>
