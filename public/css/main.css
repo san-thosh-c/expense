@@ -18,6 +18,12 @@ button{
     font-weight: 500;
 }
 
+button:disabled {
+  background-color: #cccccc; /* Lighter grey background */
+  color: #666666; /* Darker grey text */
+  cursor: not-allowed; /* Change cursor to indicate no interaction */
+}
+
 nav {
   /* position: fixed;
   top: 0;
