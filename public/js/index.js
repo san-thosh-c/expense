@@ -14,6 +14,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const popupexpense = document.getElementById("expenseform");
   const popupsettlment = document.getElementById("settlementform");
   const selectguest = document.querySelector("select[name='guestname']");
+  const selectguest_settlement = document.querySelector("select[name='guestname-settlement']");
   const editPopup = document.getElementById("editAmountPopup");
   const editAmountInput = document.getElementById("editAmountInput");
   const saveAmountBtn = document.getElementById("saveAmountBtn");
@@ -55,6 +56,29 @@ document.addEventListener("DOMContentLoaded", async () => {
   settlement_popup.onclick = async() => {
     popupsettlment.style.display = "flex";
     popupsettlment.style.zIndex = "1";
+    const tripId = select.value;
+    if (!tripId) return;
+    try {
+      const response = await fetch(`/api/trip/${tripId}`);
+      const guests = await response.json();
+      console.log("************=>", guests);
+      selectguest_settlement.innerHTML = "";
+      const defaultOption = document.createElement("option");
+      defaultOption.textContent = "Select the Guest";
+      defaultOption.disabled = true;
+      defaultOption.selected = true;
+      selectguest_settlement.appendChild(defaultOption);
+      guests.forEach((guest) => {
+        const option = document.createElement("option");
+        option.value = guest.guestname;
+        option.textContent = guest.guestname;
+        option.setAttribute("data-flat", guest.flatNumber);
+        option.setAttribute("data-tripid", guest.trip_id);
+        selectguest_settlement.appendChild(option);
+      });
+    } catch (err) {
+      showNotification("Failed to load guest list");
+    }
   };
 
   expense_popup.onclick = async () => {
@@ -124,11 +148,11 @@ document.addEventListener("DOMContentLoaded", async () => {
         let step2 = await final_summary2(tripId);
         let step3 = await final_summary3(step1,step2);
         let step4 = await final_summary4(step3);
-        let step5 = await final_summary5(step1,step4);
-        document.getElementById("tf").innerHTML="Total Food Expenses: ₹" + Math.floor(step5.totalFoodExpense);
-        document.getElementById("tveg").innerHTML="Total Veg Amount: ₹" + Math.floor(step5.totalVegAmt);
-        document.getElementById("tnveg").innerHTML="Total NonVeg Amount: ₹" + Math.floor(step5.totalNonvegAmt);
-        console.log("step4 = ", step5);
+        // let step5 = await final_summary5(step1,step4);
+        // document.getElementById("tf").innerHTML="Total Food Expenses: ₹" + Math.floor(step5.totalFoodExpense);
+        // document.getElementById("tveg").innerHTML="Total Veg Amount: ₹" + Math.floor(step5.totalVegAmt);
+        // document.getElementById("tnveg").innerHTML="Total NonVeg Amount: ₹" + Math.floor(step5.totalNonvegAmt);
+         console.log("step4 = ", step4);
         finalTable.innerHTML = "";
         step4.forEach((record) => {
           const row = document.createElement("tr");
@@ -138,7 +162,6 @@ document.addEventListener("DOMContentLoaded", async () => {
           <td>${record.totalhc}</td>
           <td>₹ ${record.totalexpense}</td>
           <td>₹ ${record.transport}</td>
-          <td>₹ ${record.Food}</td>
           <td>₹ ${record.totalCost}</td>
           <td>₹ ${record.tobepaid}</td>
           <td>₹ ${record.toReceive}</td>
@@ -212,31 +235,28 @@ document.addEventListener("DOMContentLoaded", async () => {
     console.log("step2 = ", step2);
     let final = [];
     const totalAmount = step2
-      .filter(item => item.category !== "Transport" && item.category !== "VegFood" && item.category !== "NVegFood")
+      .filter(item => item.category !== "Transport")
       .reduce((sum, item) => sum + item.amount, 0);
-
+// && item.category !== "VegFood" && item.category !== "NVegFood")
     const totalTransport = step2
       .filter(obj => obj.category === "Transport")
       .reduce((sum,item) => sum + item.amount, 0);
     const totalAdults = step1.reduce((sum, person) => sum + person.adults, 0);
     const totalKids = step1.reduce((sum, person) => sum + person.kids, 0);
-    const totalVegppl = step1.reduce((sum, person) => sum + person.veg, 0);
-    const totalNVegppl = step1.reduce((sum, person) => sum + person.nv, 0);
+    // const totalVegppl = step1.reduce((sum, person) => sum + person.veg, 0);
+    // const totalNVegppl = step1.reduce((sum, person) => sum + person.nv, 0);
     const perhead = totalAmount / totalAdults;
     const perhead_transport = totalTransport / (totalAdults + totalKids);
 
-    const totalVeg = step2
-      .filter(obj => obj.category === "VegFood")
-      .reduce((sum, item) => sum + item.amount, 0);
+    // const totalVeg = step2
+    //   .filter(obj => obj.category === "VegFood")
+    //   .reduce((sum, item) => sum + item.amount, 0);
+    // const totalNVeg = step2
+    //   .filter(obj => obj.category === "NVegFood")
+    //   .reduce((sum, item) => sum + item.amount, 0);
 
-    // console.log("--------", totalVeg);
-
-    const totalNVeg = step2
-      .filter(obj => obj.category === "NVegFood")
-      .reduce((sum, item) => sum + item.amount, 0);
-
-    const perhead_veg = totalVeg / totalVegppl;
-    const perhead_Nveg = totalNVeg / totalNVegppl;
+    // const perhead_veg = totalVeg / totalVegppl;
+    // const perhead_Nveg = totalNVeg / totalNVegppl;
     console.log("*******************************************************************");
     console.log("totalAmount without Food and Transport = ", totalAmount);
     console.log("totalTransport = ", totalTransport);
@@ -244,12 +264,12 @@ document.addEventListener("DOMContentLoaded", async () => {
     console.log("totalKids = ", totalKids);
     console.log("perhead = ", Math.floor(perhead).toFixed(2));
     console.log("perhead_transport = ", Math.floor(perhead_transport).toFixed(2));
-    console.log("Total Veg ppl = ", totalVegppl);
-    console.log("Total NVeg ppl = ", totalNVegppl);
-    console.log("Total Veg amt = ", totalVeg);
-    console.log("Total NVeg amt = ", totalNVeg);
-    console.log("Total Veg Food = ", perhead_veg.toFixed(2));
-    console.log("Total NVeg Food = ", perhead_Nveg.toFixed(2));
+    // console.log("Total Veg ppl = ", totalVegppl);
+    // console.log("Total NVeg ppl = ", totalNVegppl);
+    // console.log("Total Veg amt = ", totalVeg);
+    // console.log("Total NVeg amt = ", totalNVeg);
+    // console.log("Total Veg Food = ", perhead_veg.toFixed(2));
+    // console.log("Total NVeg Food = ", perhead_Nveg.toFixed(2));
     console.log("*******************************************************************");
     for (let t1 of step1){
       let data = {};
@@ -260,8 +280,8 @@ document.addEventListener("DOMContentLoaded", async () => {
       data.totalhc = t1.totalhc;
       data.totalexpense = Math.floor(perhead).toFixed(2) * t1.adults;
       data.transport = perhead_transport.toFixed(2) * (t1.adults + t1.kids);
-      data.totalVeg = perhead_veg.toFixed(2) * (t1.veg);
-      data.totalNV = perhead_Nveg.toFixed(2) * (t1.nv);
+      // data.totalVeg = perhead_veg.toFixed(2) * (t1.veg);
+      // data.totalNV = perhead_Nveg.toFixed(2) * (t1.nv);
       final.push(data);
     }
     console.log("Step 3 o/p = ", final);
@@ -271,9 +291,9 @@ document.addEventListener("DOMContentLoaded", async () => {
   async function final_summary4(step3){
     // console.log("----------->", step3);
     for (let t1 of step3){
-      t1.Food = (t1.totalVeg + t1.totalNV).toFixed(2);
-      t1.totalCost = (t1.totalexpense + t1.transport + t1.totalVeg + t1.totalNV).toFixed(2);
-      let balance =  ((t1.totalexpense + t1.transport + t1.totalVeg + t1.totalNV) - t1.amount).toFixed(2);
+      // t1.Food = (t1.totalVeg + t1.totalNV).toFixed(2);
+      t1.totalCost = (t1.totalexpense + t1.transport).toFixed(2);
+      let balance =  ((t1.totalexpense + t1.transport) - t1.amount).toFixed(2);
       // console.log("balance = ", balance);
       if (balance < 0){
         t1.toReceive = balance;
@@ -287,48 +307,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     return step3;
   }
 
-  async function final_summary5(step1, step4){
-    console.log("step1>", step1);
-    console.log("step4>", step4);
-    const totalVeg = step4
-      .reduce((sum, item) => sum + item.totalVeg, 0);
-
-    const totalNVeg = step4
-      .reduce((sum, item) => sum + item.totalNV, 0);  
-      
-    const totalFood = step4
-      .reduce((sum, item) => sum + Number(item.Food), 0);     
-      
-    const totalVegppl = step1.reduce((sum, person) => sum + person.veg, 0);
-    const totalNVegppl = step1.reduce((sum, person) => sum + person.nv, 0);      
-
-    console.log("totalVeg>", totalVeg);
-    console.log("totalNVeg>", totalNVeg);
-    console.log("Total Food = ", totalFood);
-    console.log("totalVegppl = ", totalVegppl);
-    console.log("totalNVegppl = ", totalNVegppl);
-
-    let output = {
-      totalFoodExpense: totalFood.toFixed(2),
-      totalVegAmt: totalVeg.toFixed(2),
-      totalNonvegAmt: totalNVeg.toFixed(2)
-    }
-    // for (let t1 of step3){
-    //   t1.Food = t1.totalVeg + t1.totalNV;
-    //   t1.totalCost = (t1.totalexpense + t1.transport + t1.totalVeg + t1.totalNV);
-    //   let balance =  (t1.totalexpense + t1.transport + t1.totalVeg + t1.totalNV) - t1.amount;
-    //   // console.log("balance = ", balance);
-    //   if (balance < 0){
-    //     t1.toReceive = balance;
-    //     t1.tobepaid = 0;
-    //   }
-    //   if (balance > 0){
-    //     t1.tobepaid = balance;
-    //     t1.toReceive = 0;
-    //   }
-    // }
-    return output;
-  }
   openBtn.onclick = async () => {
     popup.style.display = "flex";
     popup.style.zIndex = "1";
@@ -438,7 +416,9 @@ document.addEventListener("DOMContentLoaded", async () => {
   window.submitsettlementForm = async function () {
     const settlementname = document.getElementById("settlement_category").value;
     const s_amount = document.getElementById("settlementamount").value;
-    console.log("settlementname = ", select.value);
+    const guestname = document.getElementById("guestname-settlement").value;
+    const flatNumber = document.getElementById("flat-settlement").value;    
+    console.log("flatNumber = ", flatNumber);
     try{
         const response = await fetch("/addsettlement", {
         method: "POST",
@@ -449,6 +429,8 @@ document.addEventListener("DOMContentLoaded", async () => {
           trip_id: select.value,
           category: settlementname,
           amount: s_amount,
+          guestname,
+          flatNumber
         }),
       });
       const result = await response.json();
