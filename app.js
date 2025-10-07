@@ -202,12 +202,12 @@ app.post("/addexpense", async (req, res) => {
 
 app.post("/addsettlement", async (req, res) => {
   try {
-    const { trip_id, category, amount } = req.body;
-    console.log("req", req.body);
+    const { trip_id, category, amount, guestname, flatNumber } = req.body;
+    console.log("*******************REQUEST", req.body);
     const numamount = Number(amount);
     const newExp = new expense({
-      guestname: "settlement", 
-      flatNumber: "000",  
+      guestname: guestname, 
+      flatNumber: flatNumber,  
       category,
       amount: numamount,
       trip_id,
